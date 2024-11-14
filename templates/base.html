@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head lang="pt-br">
+	  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../static/favicon/favicon.ico" type="image/x-icon">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Link do Bootstrap -->
+    <link rel="stylesheet" href="../static/bootstrap/css/minty.css">
+    <!-- Link do CSS próprio -->
+    <link rel="stylesheet" href="../static/style.css">
+  </head>
+  <body class="d-flex flex-column">
+    <!-- Cabeçalho -->
+    {% include "header.html" %}
+
+    <!-- Corpo -->
+    <main class="container mt-5 flex-fill">{% block content %}{% endblock %}</main>
+
+    <!-- Rodapé -->
+    {% include "footer.html" %}
+
+    <!-- Scripts do Bootstrap -->
+    <script src="../static/bootstrap/js/bootstrap.js"></script>
+  </body>
+</html>

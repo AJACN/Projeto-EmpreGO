@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}EmpreGO! - Editar Vaga{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1>Editar Vaga</h1>
+
+            <form action="/editarvaga/{{ vaga.id_vaga }}" method="post">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título da Vaga</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" value="{{ vaga.titulo }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição da Vaga</label>
+                    <textarea class="form-control" id="descricao" name="descricao" rows="5" required>{{ vaga.descricao }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="formato" class="form-label">Formato de Trabalho</label>
+                    <select class="form-select" id="formato" name="formato" required>
+                        <option value="Presencial" {% if vaga.formato == 'Presencial' %}selected{% endif %}>Presencial</option>
+                        <option value="Remoto" {% if vaga.formato == 'Remoto' %}selected{% endif %}>Remoto</option>
+                        <option value="Híbrido" {% if vaga.formato == 'Híbrido' %}selected{% endif %}>Híbrido</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="tipo" class="form-label">Tipo de Contrato</label>
+                    <select class="form-select" id="tipo" name="tipo" required>
+                        <option value="CLT" {% if vaga.tipo == 'CLT' %}selected{% endif %}>CLT</option>
+                        <option value="PJ" {% if vaga.tipo == 'PJ' %}selected{% endif %}>PJ</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="local" class="form-label">Local da Vaga (se aplicável)</label>
+                    <input type="text" class="form-control" id="local" name="local" value="{{ vaga.local }}">
+                </div>
+                <div class="mb-3">
+                    <label for="salario" class="form-label">Salário (opcional)</label>
+                    <input type="text" class="form-control" id="salario" name="salario" value="{{ vaga.salario }}">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

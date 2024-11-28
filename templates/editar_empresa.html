@@ -4,35 +4,90 @@
 
 {% block content %}
 
-<h1>EmpreGO</h1>
-<h2>Alterar dados da Empresa</h2>
-<p>Menu</p>
-    <ul>
-        <li><a href="/adm">Voltar</a></li>
-    </ul>
-<hr>
-<form action="/editar_empresa/{{ empresa.id_empresa }}" method="post">
-    
-<label for="nome_empresa">Nome Fantasia da Empresa</label>
-<input type="text" name="nome_empresa" value="{{ empresa.nome_empresa }}" required><br><br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1>Editar Empresa</h1>
 
-<label for="cnpj">CNPJ</label>
-<input type="text" name="cnpj" value="{{ empresa.cnpj }}" maxlenght="14" placeholder="Somente números" required><br><br>
+            {% if msg_erro %} <!-- Exibe mensagem de erro, se houver -->
+            <div class="alert alert-danger" role="alert">
+                {{ msg_erro }}
+            </div>
+            {% endif %}
 
-<label for="telefone">Telefone de contato</label>
-<input type="text" name="telefone" value="{{ empresa.telefone }}" maxlength="11" placeholder="Somente números"><br><br>
+            <form action="/editar_empresa/{{ empresa.id_empresa }}" method="post">
 
-<h2>Informações para acesso da plataforma</h2>
+                <div class="mb-3">
+                    <label for="nome_empresa" class="form-label">Nome Fantasia da Empresa</label>
+                    <input type="text" class="form-control" name="nome_empresa" value="{{ empresa.nome_empresa }}" id="nome_empresa"
+                        required>
+                    <div class="valid-feedback">
+                        Tudo certo!
+                    </div>
+                    <div class="invalid-feedback">
+                        Por favor insira o nome fantasia da empresa.
+                    </div>
+                </div>
 
-<label for="email">E-mail (LOGIN)</label>
-<input type="email" name="email" value="{{ empresa.email }}" required><br><br>
+                <div class="mb-3">
+                    <label for="cnpj" class="form-label">CNPJ</label>
+                    <input type="text" class="form-control" name="cnpj" value="{{ empresa.cnpj }}" id="cnpj"
+                        placeholder="Somente números" required>
+                    <div class="valid-feedback">
+                        Tudo certo!
+                    </div>
+                    <div class="invalid-feedback">
+                        Por favor insira o CNPJ.
+                    </div>
+                </div>
 
-<label for="senha">Senha (LOGIN)</label>
-<input type="text" name="senha" value="{{ empresa.senha }}" required><br><br>
+                <div class="mb-3">
+                    <label for="telefone" class="form-label">Telefone de contato</label>
+                    <input type="text" class="form-control" name="telefone" value="{{ empresa.telefone }}"
+                        id="telefone" placeholder="Somente números">
+                    <div class="valid-feedback">
+                        Tudo certo!
+                    </div>
+                    <div class="invalid-feedback">
+                        Por insira telefone de contato.
+                    </div>
+                </div>
 
-<button type="submit">Salvar Alterações</button>
-{% if msg_erro %} <p>{{ msg_erro }}</p> {% endif %}
+                <h3>Informações para acesso da plataforma</h3>
 
-</form>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail (LOGIN)</label>
+                    <input type="email" class="form-control" name="email" value="{{ empresa.email }}" id="email" required>
+                    <div class="valid-feedback">
+                        Tudo certo!
+                    </div>
+                    <div class="invalid-feedback">
+                        Por favor insira o e-mail.
+                    </div>
+                </div>
 
-{% endblock %}
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha (LOGIN)</label>
+                    <input type="text" class="form-control" name="senha" value="{{ empresa.senha }}" id="email" required>
+                    <div class="valid-feedback">
+                        Tudo certo!
+                    </div>
+                    <div class="invalid-feedback">
+                        Por favor insira a senha.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+
+            </form>
+
+            <!-- Link do Input Mask -->
+            <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+
+            <!-- Script de configuração do Input Mask -->
+            <script>
+                Inputmask("99.999.999/9999-99").mask(document.getElementById("cnpj")); // Máscara para CNPJ
+                Inputmask("(99) 99999-9999").mask(document.getElementById("telefone")); // Máscara para Telefone
+            </script>
+
+            {% endblock %}

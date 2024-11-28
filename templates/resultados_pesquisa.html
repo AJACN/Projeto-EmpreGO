@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}EmpreGO! - Resultados da Pesquisa {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center"> <!-- Centraliza horizontalmente -->
+        <div class="col-md-6"> <!-- Ocupa metade da tela em telas médias e maiores -->
+            <h1 class="text-center mb-4">Resultados para: "{{ palavra_chave }}"</h1>
+            {% if vagas %}
+            <ul>
+                {% for vaga in vagas %}
+                <div class="card mb-4 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">
+                            {{ vaga['titulo'] }}
+                        </h5>
+
+                        <p class="card-text">
+                            {{ vaga['descricao'] | truncate(100) }}
+                        </p>
+
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <strong>Empresa: </strong>{{ vaga['nome_empresa'] }}
+                        </h6>
+
+                        <p class="card-text">
+                            <small class="text-muted">
+                                {{ vaga.formato }} - {{ vaga.tipo }}
+                            </small>
+                        </p>
+
+                        <a href="/sobrevaga/{{ vaga['id_vaga'] }}">Ver detalhes</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Nenhuma vaga encontrada para "{{ palavra_chave }}"</p>
+            {% endif %}
+            {% endblock %}

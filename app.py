@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, send_from_directory
 from mysql.connector import Error
 from config import * #(config.py)
 from db_functions import * #(Funções de Banco de Dados)
+import os
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.secret_key = SECRET_KEY
 
 # ROTA DA PÁGINA INICIAL (TODOS ACESSAM)
@@ -130,8 +132,8 @@ def cadastrar_empresa():
     #Tratando os dados vindos do formulário
     if request.method == 'POST':
         nome_empresa = request.form['nome_empresa']
-        cnpj = request.form['cnpj']
-        telefone = request.form['telefone']
+        cnpj = limpar_input(request.form['cnpj'])
+        telefone = limpar_input(request.form['telefone'])
         email = request.form['email']
         senha = request.form['senha']
 
@@ -183,8 +185,8 @@ def editar_empresa(id_empresa):
     #Tratando os dados vindos do formulário
     if request.method == 'POST':
         nome_empresa = request.form['nome_empresa']
-        cnpj = request.form['cnpj']
-        telefone = request.form['telefone']
+        cnpj = limpar_input(request.form['cnpj'])
+        telefone = limpar_input(request.form['telefone'])
         email = request.form['email']
         senha = request.form['senha']
 
@@ -341,7 +343,7 @@ def editarvaga(id_vaga):
         formato = request.form['formato']
         tipo = request.form['tipo']
         local = request.form['local']
-        salario = request.form['salario']
+        salario = limpar_input(request.form['salario'])
 
         if not titulo or not descricao or not formato or not tipo:
             return redirect('/empresa')
@@ -433,13 +435,11 @@ def cadadastrarvaga():
         descricao = request.form['descricao']
         formato = request.form['formato']
         tipo = request.form['tipo']
-        local = ''
         local = request.form['local']
-        salario = ''
-        salario = request.form['salario']
+        salario = limpar_input(request.form['salario'])
         id_empresa = session['id_empresa']
 
-        if not titulo or not descricao or not formato or not tipo:
+        if not titulo or not descricao or not formato or not tipo or not salario:
             return render_template('cadastrarvaga.html', msg_erro="Os campos obrigatório precisam estar preenchidos!")
         
         try:
@@ -487,10 +487,83 @@ def sobrevaga(id_vaga):
 def sobre():
     return render_template("sobre.html")
 
+@app.route('/contato')
+def contato():
+    return render_template("contato.html")
+
+#ROTA PESQUISAR POR PALAVRA CHAVE
+@app.route('/pesquisar', methods=['GET'])
+def pesquisar():
+    palavra_chave = request.args.get('q', '')
+    try:
+        conexao, cursor = conectar_db()
+        comandoSQL = '''
+        SELECT vaga.*, empresa.nome_empresa
+        FROM vaga
+        JOIN empresa ON vaga.id_empresa = empresa.id_empresa
+        WHERE vaga.status = 'ativa' AND (
+            vaga.titulo LIKE %s OR
+            vaga.descricao LIKE %s
+        )
+        '''
+        cursor.execute(comandoSQL, (f'%{palavra_chave}%', f'%{palavra_chave}%'))
+        vagas = cursor.fetchall()
+        return render_template('resultados_pesquisa.html', vagas=vagas, palavra_chave=palavra_chave)
+    except Error as erro:
+        return f"ERRO! {erro}"
+    finally:
+        encerrar_db(cursor, conexao)
+
+@app.route('/candidatar/<int:id_vaga>', methods=['POST', 'GET'])
+def candidatar(id_vaga):
+    #Verifica se o adm está tentando acessar indevidamente
+    if 'adm' in session:
+        return redirect('/adm')
+    #Verifica se a empresa está tentando acessar indevidamente
+    if 'empresa' in session:
+        return redirect('/empresa')
+
+    if request.method == 'GET':
+        return render_template('candidatar.html', id_vaga=id_vaga)
+
+    if request.method == 'POST':
+        nome_candidato = request.form['nome_candidato']
+        email = request.form['email']
+        telefone = limpar_input(request.form['telefone'])
+        curriculo = request.files['curriculo']
+
+        if not nome_candidato or not email or not telefone or not curriculo.filename:
+            return redirect(f'/sobrevaga/{id_vaga}')
+        
+        # try:
+        nome_arquivo = f"{nome_candidato}_{id_vaga}_{curriculo.filename}"
+        curriculo.save(os.path.join(app.config['UPLOAD_FOLDER'], nome_arquivo))
+        conexao, cursor = conectar_db()
+        comandoSQL = "INSERT INTO candidato (nome_candidato, email, telefone, curriculo, id_vaga) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(comandoSQL, (nome_candidato, email, telefone, nome_arquivo, id_vaga) )
+        conexao.commit()
+        return redirect(f'/sobrevaga/{id_vaga}')
+
+        # except mysql.connector.Error as erro:
+        #     print(f"Erro de Banco de Dados: {erro}")
+        #     return redirect(f'/sobrevaga/{id_vaga}')
+
+        # except Exception as erro:
+        #     print(f"Erro de Back End! {erro}")
+        #     return redirect(f'/sobrevaga/{id_vaga}')
+        
+        # finally:
+        #     encerrar_db(cursor, conexao)
 
 
 
 
+
+
+#ROTA TRATA O ERRO 404 - PÁGINA NÃO ENCONTRADA
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('erro404.html'), 404
 
 #ROTA DE LOGOUT (ENCERRA AS SESSÕES)
 @app.route('/logout')

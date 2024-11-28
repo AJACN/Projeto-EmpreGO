@@ -58,3 +58,12 @@ VALUES
 ('QA Tester', 'Testes automatizados e garantia de qualidade do software.', 'Remoto', 'CLT', 'Remoto', 'R$ 6000', 3, 'ativa'),
 ('Arquiteto de Soluções', 'Definição de arquitetura de sistemas e infraestrutura.', 'Híbrido', 'PJ', 'Belo Horizonte - MG', 'R$ 10000', 3, 'ativa'),
 ('Analista de Suporte', 'Atendimento a clientes e suporte técnico de sistemas.', 'Presencial', 'CLT', 'Belo Horizonte - MG', 'R$ 4000', 3, 'ativa');
+
+CREATE TABLE candidato (
+    id_candidato INT PRIMARY KEY AUTO_INCREMENT,
+    nome_candidato VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefone CHAR(11) NOT NULL,
+    curriculo VARCHAR(50) NOT NULL,
+    FOREIGN KEY (id_vaga) REFERENCES vaga (id_vaga)
+)

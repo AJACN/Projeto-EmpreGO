@@ -7,7 +7,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h1>Cadastrar Nova Empresa</h1>
+            <h1>Candidatar-se</h1>
 
             {% if msg_erro %} <!-- Exibe mensagem de erro, se houver -->
             <div class="alert alert-danger" role="alert">
@@ -15,67 +15,54 @@
             </div>
             {% endif %}
 
-            <form action="/cadastrar_empresa" method="post" class="needs-validation" novalidate>
+            <form action="/candidatar/{{ id_vaga }}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                 <div class="mb-3">
-                    <label for="nome_empresa" class="form-label">Nome Fantasia da Empresa</label>
-                    <input type="text" name="nome_empresa" class="form-control" id="nome_empresa" required>
+                    <label for="nome_empresa" class="form-label">Nome</label>
+                    <input type="text" name="nome_candidato" class="form-control" id="nome_candidato" required>
                     <div class="valid-feedback">
                         Tudo certo!
                     </div>
                     <div class="invalid-feedback">
-                        Por favor escreva o nome fantasia da empresa.
+                        Por favor insira seu nome.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="cnpj" class="form-label">CNPJ</label>
-                    <input type="text" name="cnpj" placeholder="Somente números" class="form-control"
-                        id="cnpj" required>
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" name="email" class="form-control" id="email" required>
                     <div class="valid-feedback">
                         Tudo certo!
                     </div>
                     <div class="invalid-feedback">
-                        Por favor insira o CNPJ.
+                        Por favor insira seu e-mail.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="telefone" class="form-label">Telefone de contato</label>
+                    <label for="telefone" class="form-label">Telefone</label>
                     <input type="text" name="telefone" placeholder="Somente números" class="form-control"
                         id="telefone" required>
                     <div class="valid-feedback">
                         Tudo certo!
                     </div>
                     <div class="invalid-feedback">
-                        Por favor insira o telefone de contato.
-                    </div>
-                </div>
-
-                <h3>Informações para acesso da plataforma</h3>
-
-                <div class="mb-3">
-                    <label for="email" class="form-label">E-mail (LOGIN)</label>
-                    <input type="email" name="email" class="form-control" id="email" required>
-                    <div class="valid-feedback">
-                        Tudo certo!
-                    </div>
-                    <div class="invalid-feedback">
-                        Por favor insira o e-mail.
+                        Por favor insira seu telefone.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="senha" class="form-label">Senha (LOGIN)</label>
-                    <input type="text" name="senha" class="form-control" id="senha" required>
+                    <label for="curriculo" class="form-label">Currículo</label>
+                    <input type="file" name="curriculo" class="form-control" id="curriculo" required>
                     <div class="valid-feedback">
                         Tudo certo!
                     </div>
                     <div class="invalid-feedback">
-                        Por favor insira a senha.
+                        Por favor insira seu curriculo.
                     </div>
                 </div>
+
                 <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary">Cadastrar Empresa</button>
+                    <button type="submit" class="btn btn-primary">Enviar Currículo</button>
                 </div>
             </form>
         </div>
@@ -87,7 +74,6 @@
 
 <!-- Script de configuração do Input Mask -->
 <script>
-    Inputmask("99.999.999/9999-99").mask(document.getElementById("cnpj")); // Máscara para CNPJ
     Inputmask("(99) 99999-9999").mask(document.getElementById("telefone")); // Máscara para Telefone
 </script>
 

@@ -26,8 +26,9 @@
                       <strong>Tipo:</strong> {{ vaga.tipo }}
                     </p>
                     <a href="/editarvaga/{{ vaga.id_vaga }}" class="btn btn-primary btn-sm me-2">Editar</a>
-                    <a href="/statusvaga/{{ vaga.id_vaga }}" class="btn btn-warning btn-sm" onclick="return confirm('Tem certeza que deseja inativar esta empresa?')">Inativar</a>
-                  </div>
+                    <a href="/statusvaga/{{ vaga.id_vaga }}" class="btn btn-warning btn-sm" onclick="return confirm('Tem certeza que deseja inativar esta vaga?')">Inativar</a>
+                    <a href="/candidatos/{{ vaga.id_vaga }}" class="btn btn-danger btn-sm me-2">Ver vagas</a>
+                </div>
                 </div>                  
               </div>
             {% endfor %}

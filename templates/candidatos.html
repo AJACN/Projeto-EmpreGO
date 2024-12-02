@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}EmpreGO! - Visualizar Currículos{% endblock %}
+
+{% block content %}
+
+{% for candidato in candidatos %}
+<p>{{ candidato.nome_candidato }} -
+    {{ candidato.email }} -
+    {{ candidato.telefone }} -
+    <a href="/download/{{ candidato.curriculo }}">Baixar currículo</a>
+</p>
+
+{% else %}
+<p>Não há candidatos para essa vaga!</p>
+{% endfor %}
+
+{% endblock %}

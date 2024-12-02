@@ -555,9 +555,31 @@ def candidatar(id_vaga):
         # finally:
         #     encerrar_db(cursor, conexao)
 
+# ROTA PARA VISUALIZAR CANDIDATOS
+@app.route('/candidatos/<int:id_vaga>', methods=['GET', 'POST'])
+def candidatos(id_vaga):
+    if not session:
+        return redirect('/login')
+    if 'adm' in session:
+        return redirect('/adm')
+    
+    try:
+        conexao, cursor = conectar_db()
+        comandoSQL = '''SELECT * FROM candidato WHERE id_vaga = %s'''
+        cursor.execute(comandoSQL, (id_vaga,))
+        candidatos = cursor.fetchall()
+        return render_template('candidatos.html', candidatos=candidatos)
+    
+    except mysql.connector.Error as erro:
+        return f"Erro de Banco de dados: {erro}"  
+    except Exception as erro:  
+        return f"Erro de Back-end: {erro}"
+    finally:
+        encerrar_db(conexao, cursor)
 
-
-
+@app.route('/download/<curriculo>')
+def download():
+    return send_from_directory(app.config['UPLOAD_FOLDER'], curriculo, as_attachment=False)
 
 
 #ROTA TRATA O ERRO 404 - PÁGINA NÃO ENCONTRADA

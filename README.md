@@ -3,6 +3,8 @@
 **Descrição:** 
 Este projeto é uma rede corporativa desenvolvida utilizando Flask e MySQL, ele permite que usuários possam se candidatar a vagas, que empresas possam cadastrar e editar vagas, além de receber currículos, e por último permite que os administradores possam ativar ou desativar empresas, além de exluí-las. Também possui uma página sobre, uma página de contatos, e painéis administrativos.
 
+![imagem de capa](./static/assets/emprego.png)
+
 ## Índice
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
@@ -32,8 +34,11 @@ Este projeto é uma rede corporativa desenvolvida utilizando Flask e MySQL, ele 
 
 ## Tecnologias Utilizadas
 - **Linguagem/Frameworks:**
+    - ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+    - ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
     - ![PYTHON](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
     - ![FLASK](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+    - ![BOOTSTRAP](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 
 - **Banco de Dados:**
     - ![MYSQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
@@ -41,7 +46,6 @@ Este projeto é uma rede corporativa desenvolvida utilizando Flask e MySQL, ele 
 - **Outras bibliotecas:**
     - mysql.connector
     - Jinja2
-    - Werkzeug
 
 ## Autores
 - Antonio Jairo Alves Cordeiro Neto - https://github.com/AJACN - antonio.jairo.senai@gmail.com

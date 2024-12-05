@@ -265,6 +265,12 @@ def excluir_empresa(id_empresa):
 
     try:
         conexao, cursor = conectar_db()
+
+        #EXCLUÍNDO OS CURRÍCULOS RELACIONADOS NA EMPRESA EXCLUÍDA
+        comandoSQL = 'DELETE FROM curriculo WHERE id_empresa = %s'
+        cursor.execute(comandoSQL, (id_empresa,))
+        conexao.commit()
+
         #EXCLUÍNDO AS VAGAS RELACIONADAS NA EMPRESA EXCLUÍDA
         comandoSQL = 'DELETE FROM vaga WHERE id_empresa = %s'
         cursor.execute(comandoSQL, (id_empresa,))
@@ -407,6 +413,13 @@ def excluirvaga(id_vaga):
 
     try:
         conexao, cursor = conectar_db()
+
+        #DELETANDO OS CURRÍCULOS RELACIONADOS A VAGA
+        comandoSQL = 'DELETE FROM curriculo WHERE id_vaga = %s and status = "inativa"'
+        cursor.execute(comandoSQL, (id_vaga,))
+        conexao.commit()
+
+        #DELETANDO AS VAGAS
         comandoSQL = 'DELETE FROM vaga WHERE id_vaga = %s AND status = "inativa"'
         cursor.execute(comandoSQL, (id_vaga,))
         conexao.commit()
@@ -578,8 +591,33 @@ def candidatos(id_vaga):
         encerrar_db(conexao, cursor)
 
 @app.route('/download/<curriculo>')
-def download():
-    return send_from_directory(app.config['UPLOAD_FOLDER'], curriculo, as_attachment=False)
+def download(curriculo):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], curriculo, as_attachment=True)
+
+#ROTA PARA EXCLUIR CURRICULO
+@app.route("/excluircurriculo/<int:id_candidato>")
+def excluircurriculo(id_candidato):
+    #Verifica se não tem sessão ativa
+    if not session:
+        return redirect('/login')
+    #Verifica se o adm está tentando acessar indevidamente
+    if 'adm' in session:
+        return redirect('/adm')
+
+    try:
+        conexao, cursor = conectar_db()
+
+        #DELETANDO OS CURRICULOS
+        comandoSQL = 'DELETE FROM candidato WHERE id_candidato = %s'
+        cursor.execute(comandoSQL, (id_vaga,))
+        conexao.commit()
+        return redirect('/candidatos')
+    except Error as erro:
+        return f"ERRO! Erro de Banco de Dados: {erro}"
+    except Exception as erro:
+        return f"ERRO! Outros erros: {erro}"
+    finally:
+        encerrar_db(cursor, conexao)
 
 
 #ROTA TRATA O ERRO 404 - PÁGINA NÃO ENCONTRADA

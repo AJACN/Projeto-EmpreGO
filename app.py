@@ -533,7 +533,7 @@ def candidatar(id_vaga):
     if 'adm' in session:
         return redirect('/adm')
     #Verifica se a empresa está tentando acessar indevidamente
-    if 'empresa' in session:
+    if 'nome_empresa' in session:
         return redirect('/empresa')
 
     if request.method == 'GET':
@@ -578,12 +578,12 @@ def candidatos(id_vaga):
     
     try:
         conexao, cursor = conectar_db()
-        comandoSQL = '''SELECT * FROM candidato WHERE id_vaga = %s'''
+        comandoSQL = 'SELECT * FROM candidato WHERE id_vaga = %s'
         cursor.execute(comandoSQL, (id_vaga,))
         candidatos = cursor.fetchall()
         return render_template('candidatos.html', candidatos=candidatos)
     
-    except mysql.connector.Error as erro:
+    except Error as erro:
         return f"Erro de Banco de dados: {erro}"  
     except Exception as erro:  
         return f"Erro de Back-end: {erro}"
@@ -594,30 +594,34 @@ def candidatos(id_vaga):
 def download(curriculo):
     return send_from_directory(app.config['UPLOAD_FOLDER'], curriculo, as_attachment=True)
 
-#ROTA PARA EXCLUIR CURRICULO
-@app.route("/excluircurriculo/<int:id_candidato>")
-def excluircurriculo(id_candidato):
-    #Verifica se não tem sessão ativa
-    if not session:
-        return redirect('/login')
-    #Verifica se o adm está tentando acessar indevidamente
-    if 'adm' in session:
-        return redirect('/adm')
-
+@app.route('/excluir_candidato/<filename>/<int:id_vaga>')
+def excluir_candidato(filename, id_vaga):
+    print("chegou")
     try:
         conexao, cursor = conectar_db()
-
-        #DELETANDO OS CURRICULOS
-        comandoSQL = 'DELETE FROM candidato WHERE id_candidato = %s'
-        cursor.execute(comandoSQL, (id_vaga,))
+        comandoSQL = 'DELETE FROM candidato WHERE curriculo = %s'
+        cursor.execute(comandoSQL, (filename,))
         conexao.commit()
-        return redirect('/candidatos')
+        print("Registro removido do banco de dados.")
+
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print("Arquivo removido com sucesso.")
+        else:
+            print("Arquivo não encontrado.")
+
+        return redirect(f'/candidatos/{id_vaga}')
     except Error as erro:
-        return f"ERRO! Erro de Banco de Dados: {erro}"
+        return f"Erro de banco de Dados: {erro}"
     except Exception as erro:
-        return f"ERRO! Outros erros: {erro}"
+        return f"Erro de back-end: {erro}"
     finally:
-        encerrar_db(cursor, conexao)
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'conexao' in locals() and conexao:
+            conexao.close()
 
 
 #ROTA TRATA O ERRO 404 - PÁGINA NÃO ENCONTRADA

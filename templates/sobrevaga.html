@@ -33,8 +33,10 @@
                     <p class="card-text"><strong>Tipo:</strong> {{ vaga.tipo }}</p>
 
                     <!-- Aqui você pode adicionar um botão para candidatar-se à vaga,
-                         por exemplo, link para um site externo ou um formulário de contato -->
-                    <a href="/candidatar/{{ vaga.id_vaga }}" class="btn btn-primary">Candidatar-se</a>
+                       por exemplo, link para um site externo ou um formulário de contato -->
+                    {% if not session %}
+                        <a href="/candidatar/{{ vaga.id_vaga }}" class="btn btn-primary">Candidatar-se</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
